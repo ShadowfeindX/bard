@@ -1,2 +1,27 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<nav>
+    <ol>
+        <li>
+            <a href="/testing/charsheet">Character Sheet</a>
+        </li>
+        <li>
+            <a href="/testing/dashboard">DM Dashboard</a>
+        </li>
+        <li>
+            <a href="/testing/archives">Archives</a>
+        </li>
+    </ol>
+</nav>
+<!-- <hr>
+<nav>
+    <ol>
+        <li>
+            <a href="/replacing/charsheet">Character Sheet</a>
+        </li>
+        <li>
+            <a href="/replacing/dashboard">DM Dashboard</a>
+        </li>
+        <li>
+            <a href="/replacing/new">Test Page</a>
+        </li>
+    </ol>
+</nav> -->

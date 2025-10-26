@@ -15,7 +15,8 @@
 		"test:e2e": "playwright test",
 		"test": "npm run test:e2e",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"emulators": "firebase emulators:start --project demo-bard --import=./.dir --export-on-exit"
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^4.1.1",

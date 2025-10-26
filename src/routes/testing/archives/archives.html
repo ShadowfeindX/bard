@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.A.R.D. RETRIEVAL SYSTEM v4.7</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: #0a0a0a;
+            color: #c0c0c0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.4;
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            padding: 8px 15px;
+            font-size: 11px;
+            color: #888;
+        }
+
+        .header {
+            background: #0f0f0f;
+            border-bottom: 2px solid #333;
+            padding: 15px 20px;
+            margin-bottom: 0;
+        }
+
+        .header h1 {
+            color: #c0c0c0;
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        .header .clearance {
+            color: #666;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .import-section {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            padding: 15px;
+            margin: 15px;
+            font-size: 11px;
+        }
+
+        .import-section h3 {
+            color: #888;
+            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .import-section textarea {
+            width: 100%;
+            height: 120px;
+            background: #000;
+            border: 1px solid #333;
+            color: #c0c0c0;
+            font-family: 'Courier New', monospace;
+            padding: 8px;
+            resize: vertical;
+            font-size: 11px;
+        }
+
+        .import-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .import-btn {
+            padding: 6px 12px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: #888;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .import-btn:hover {
+            background: #222;
+            border-color: #666;
+            color: #c0c0c0;
+        }
+
+        .search-container {
+            background: #0f0f0f;
+            border-bottom: 1px solid #333;
+            padding: 12px 15px;
+            font-size: 11px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 8px;
+            background: #000;
+            border: 1px solid #333;
+            color: #c0c0c0;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #555;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 5px 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .filter-btn:hover {
+            background: #222;
+            color: #c0c0c0;
+        }
+
+        .filter-btn.active {
+            background: #2a2a2a;
+            border-color: #555;
+            color: #fff;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 280px;
+            gap: 0;
+            height: calc(100vh - 200px);
+        }
+
+        .file-list {
+            background: #0a0a0a;
+            border-right: 1px solid #333;
+            padding: 0;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+
+        .file-list h2 {
+            color: #666;
+            padding: 10px 12px;
+            font-size: 10px;
+            border-bottom: 1px solid #1a1a1a;
+            font-weight: normal;
+            text-transform: uppercase;
+            background: #0f0f0f;
+            position: sticky;
+            top: 0;
+        }
+
+        .file-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1a1a1a;
+            cursor: pointer;
+            background: #0a0a0a;
+        }
+
+        .file-item:hover {
+            background: #121212;
+        }
+
+        .file-item.active {
+            background: #1a1a1a;
+            border-left: 2px solid #555;
+        }
+
+        .file-cfn {
+            color: #666;
+            font-size: 10px;
+            margin-bottom: 3px;
+        }
+
+        .file-name {
+            color: #c0c0c0;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .file-class {
+            color: #888;
+            font-size: 9px;
+        }
+
+        .detail-view {
+            background: #0a0a0a;
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+
+        .detail-view h2 {
+            color: #c0c0c0;
+            margin-bottom: 15px;
+            font-size: 13px;
+            font-weight: normal;
+            text-transform: uppercase;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #0f0f0f;
+            border: 1px solid #1a1a1a;
+        }
+
+        .detail-section h3 {
+            color: #888;
+            margin-bottom: 8px;
+            font-size: 10px;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .detail-row {
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            color: #c0c0c0;
+            font-size: 11px;
+        }
+
+        .related-files {
+            background: #0a0a0a;
+            border-left: 1px solid #333;
+            padding: 0;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+
+        .related-files h2 {
+            color: #666;
+            padding: 10px 12px;
+            font-size: 10px;
+            border-bottom: 1px solid #1a1a1a;
+            font-weight: normal;
+            text-transform: uppercase;
+            background: #0f0f0f;
+            position: sticky;
+            top: 0;
+        }
+
+        .related-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1a1a1a;
+            cursor: pointer;
+            background: #0a0a0a;
+        }
+
+        .related-item:hover {
+            background: #121212;
+        }
+
+        .related-type {
+            color: #666;
+            font-size: 9px;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .related-desc {
+            color: #888;
+            font-size: 10px;
+        }
+
+        .placeholder {
+            color: #444;
+            font-style: italic;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 11px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 0;
+            background: #0f0f0f;
+            border-bottom: 1px solid #333;
+            padding: 10px 15px;
+        }
+
+        .stat-box {
+            padding: 0 20px;
+            border-right: 1px solid #1a1a1a;
+            font-size: 11px;
+        }
+
+        .stat-box:last-child {
+            border-right: none;
+        }
+
+        .stat-number {
+            color: #c0c0c0;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 9px;
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .no-results {
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 12px 20px;
+            color: #c0c0c0;
+            z-index: 1000;
+            font-size: 11px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .notification.error {
+            border-color: #666;
+            color: #999;
+        }
+
+        .toggle-import {
+            text-align: left;
+            padding: 8px 15px;
+            background: #0f0f0f;
+            border-bottom: 1px solid #333;
+        }
+
+        .toggle-import button {
+            padding: 5px 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .toggle-import button:hover {
+            background: #222;
+            color: #c0c0c0;
+        }
+
+        .import-section.collapsed {
+            display: none;
+        }
+
+        .detail-text {
+            color: #999;
+            font-size: 11px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-header">
+        BUREAU ANOMALOUS RESEARCH DEFENSE // SECURE TERMINAL v4.7.2 // SESSION: A7F9-2K4L // UPTIME: 47:23:11
+    </div>
+
+    <div class="header">
+        <h1>CLASSIFIED FILE RETRIEVAL SYSTEM</h1>
+        <div class="clearance">LEVEL 1+ CLEARANCE REQUIRED // CUSTODES ARCANA ET VERUM</div>
+    </div>
+
+    <div class="toggle-import">
+        <button onclick="toggleImport()">[ DATA IMPORT/EXPORT ]</button>
+    </div>
+
+    <div class="import-section collapsed" id="importSection">
+        <h3>Data Transfer Protocol</h3>
+        <textarea id="importData" placeholder="PASTE JSON FORMATTED DATA FOR BATCH IMPORT&#x0a;&#x0a;REQUIRED FIELDS: cfn, name, threatClass, description, location, status, containmentDC, clearance, firstIncident, capabilities, weaknesses, protocol, relatedFiles"></textarea>
+        <div class="import-buttons">
+            <button class="import-btn" onclick="importFiles()">Import Data</button>
+            <button class="import-btn" onclick="exportFiles()">Export Database</button>
+            <button class="import-btn" onclick="clearDatabase()">Purge Local Cache</button>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-box">
+            <div class="stat-number" id="totalFiles">25</div>
+            <div class="stat-label">Total Records</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="activeFiles">25</div>
+            <div class="stat-label">Active Cases</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="containedFiles">0</div>
+            <div class="stat-label">Contained</div>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search: CFN, entity name, location, classification..." oninput="performSearch()">
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter(this, 'all')">All Files</button>
+            <button class="filter-btn" data-filter="E-Class" onclick="setFilter(this, 'E-Class')">E-Class</button>
+            <button class="filter-btn" data-filter="D-Class" onclick="setFilter(this, 'D-Class')">D-Class</button>
+            <button class="filter-btn" data-filter="C-Class" onclick="setFilter(this, 'C-Class')">C-Class</button>
+            <button class="filter-btn" data-filter="Active" onclick="setFilter(this, 'Active')">Active</button>
+            <button class="filter-btn" data-filter="Contained" onclick="setFilter(this, 'Contained')">Contained</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="file-list">
+            <h2>File Registry</h2>
+            <div id="fileListContainer"></div>
+        </div>
+
+        <div class="detail-view">
+            <div class="placeholder" id="placeholderText">
+                ═══════════════════════════════════<br><br>
+                NO FILE SELECTED<br><br>
+                SELECT A RECORD FROM THE FILE REGISTRY<br>
+                TO VIEW CLASSIFIED INFORMATION<br><br>
+                ═══════════════════════════════════
+            </div>
+            <div id="detailContent" style="display: none;"></div>
+        </div>
+
+        <div class="related-files">
+            <h2>Cross-References</h2>
+            <div id="relatedFilesContainer">
+                <div class="placeholder">
+                    No cross-references available.<br><br>
+                    Select a file to view related cases.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let files = [
+            {
+                cfn: "I-SEA-047-E",
+                name: "The Waiting Room",
+                threatClass: "E-Class",
+                description: "Temporal loop affecting medical waiting areas",
+                location: "Seattle",
+                status: "Active (Monitored)",
+                containmentDC: "5",
+                clearance: "Level 1+",
+                firstIncident: "2024-02-14: Patient reported waiting 'forever' at Seattle General. Security footage showed 6-hour loop repeating 47 times over 2 days.",
+                capabilities: "Temporal Compression: Causes time dilation for occupants. External observers see normal time passage. Victims experience extreme boredom leading to minor Sanity Drain (1-2 points).",
+                weaknesses: "Appointment Fulfillment: Loop breaks when patient is actually called. Calendar Day Change: Resets at midnight local time.",
+                protocol: "Monitor affected facilities. If civilian caught in loop, Bureau medical staff must conduct 'emergency appointment' to release victim.",
+                relatedFiles: ["Room 313", "The Late Train", "Honky-Tonk Time Loop"]
+            },
+            {
+                cfn: "S-ATL-088-D",
+                name: "The Commuter",
+                threatClass: "D-Class",
+                description: "Hostile entity inhabiting subway system",
+                location: "Atlanta",
+                status: "Active (Containment Protocol)",
+                containmentDC: "7",
+                clearance: "Level 1+",
+                firstIncident: "2022-09-08: Multiple passengers on Atlanta MARTA reported being 'followed' by businessman who appeared on every train car simultaneously.",
+                capabilities: "Simultaneous Manifestation: Appears in multiple locations within transit system. Exhaustion Aura: Prolonged proximity causes extreme fatigue (DC 7 END Check).",
+                weaknesses: "End of Line Protocol: Cannot manifest beyond final station. Rush Hour Disruption: Loses cohesion when passenger density exceeds 200 people per car.",
+                protocol: "B.A.R.D. maintains undercover agents on affected lines during off-peak hours. Civilian encounters contained via route diversion and memory alteration.",
+                relatedFiles: ["The Late Train", "Wraith Hound"]
+            },
+            {
+                cfn: "I-BOS-129-E",
+                name: "Sidewalk Squares",
+                threatClass: "E-Class",
+                description: "Cognitive compulsion affecting pedestrian movement",
+                location: "Boston",
+                status: "Active (Low Priority)",
+                containmentDC: "5",
+                clearance: "Level 1+",
+                firstIncident: "2025-03-22: Seventeen pedestrians in Back Bay district simultaneously refused to step on sidewalk cracks. Five suffered panic attacks.",
+                capabilities: "Compulsive Avoidance: Induces powerful psychological need to avoid cracks in pavement (DC 5 WIL Check). Contagious Behavior: Watching affected individuals triggers compulsion.",
+                weaknesses: "Repaved Surfaces: New concrete with no visible cracks neutralizes effect. Distraction: Phone use grants advantage on resistance checks.",
+                protocol: "Passive monitoring only. Public Works department prioritizes sidewalk repair in affected zones under standard maintenance cover story.",
+                relatedFiles: ["The Doorman's Question", "Beer Garden Consensus"]
+            },
+            {
+                cfn: "S-PHX-061-D",
+                name: "The Parking Attendant",
+                threatClass: "D-Class",
+                description: "Territorial spirit enforcing parking violations",
+                location: "Phoenix",
+                status: "Contained (Geographic)",
+                containmentDC: "7",
+                clearance: "Level 1+",
+                firstIncident: "2023-07-19: Security footage captured empty parking enforcement uniform writing tickets at 3 AM. Vehicles that ignored citations experienced catastrophic mechanical failures.",
+                capabilities: "Violation Detection: Automatically aware of any parking infractions within 500-yard radius. Mechanical Curse: Issued citations cause progressive vehicle failure.",
+                weaknesses: "Valid Payment: Curse is nullified if citation is paid through official city system within 72 hours. Daytime Dormancy: Only manifests between 10 PM and 6 AM.",
+                protocol: "Bureau agreement with Phoenix Parking Authority. Affected district marked as 'maintenance zone'. Bureau monitors citation database and processes payments.",
+                relatedFiles: ["The Doorman's Question", "The Commuter"]
+            },
+            {
+                cfn: "I-POR-034-E",
+                name: "The Coffee That Never Cools",
+                threatClass: "E-Class",
+                description: "Thermodynamically impossible beverage",
+                location: "Portland",
+                status: "Active (Monitoring)",
+                containmentDC: "5",
+                clearance: "Level 1+",
+                firstIncident: "2024-11-03: Local cafe patron reported coffee remaining at exactly 185°F for over 6 hours. 12 additional cases across three establishments.",
+                capabilities: "Thermal Suspension: Beverages maintain constant temperature indefinitely. Anxiety Induction: Mild existential dread regarding passage of time (1 point Sanity loss max).",
+                weaknesses: "Container Transfer: Pouring beverage into new container breaks effect. Additive Disruption: Adding cream or sugar terminates thermal suspension.",
+                protocol: "Bureau maintains informant network within Portland coffee industry. Low threat level - establishments monitored but not shut down.",
+                relatedFiles: ["The Food Cart Paradox", "Beer Garden Consensus"]
+            },
+            {
+                cfn: "S-CHI-201-C",
+                name: "The Late Train",
+                threatClass: "C-Class",
+                description: "Temporal echo of 1947 commuter train disaster",
+                location: "Chicago",
+                status: "Active (Annual Protocol)",
+                containmentDC: "10",
+                clearance: "Level 1+",
+                firstIncident: "1947-06-21: Original disaster - Chicago L train derailed killing 34 passengers. 2019-06-21: First confirmed spectral manifestation on anniversary.",
+                capabilities: "Temporal Manifestation: Full physical train appears on anniversary (June 21st, 10:47 PM). Passenger Compulsion: Overwhelming urge to board (DC 10 WIL Check). Temporal Displacement: Passengers transported to 1947 crash moment.",
+                weaknesses: "Temporal Specificity: Only manifests on exact anniversary for 47-minute window. Track Disruption: Physical obstacles prevent full materialization.",
+                protocol: "Annual June 21st lockdown of L section under 'maintenance' cover. B.A.R.D. agents in period attire board if manifestation occurs. Post-event memory suppression required.",
+                relatedFiles: ["The Waiting Room", "Room 313", "The River's Memory"]
+            },
+            {
+                cfn: "I-DEN-092-D",
+                name: "The Doorman's Question",
+                threatClass: "D-Class",
+                description: "Cognitive trap manifesting at building entrances",
+                location: "Denver",
+                status: "Active (Multiple Locations)",
+                containmentDC: "7",
+                clearance: "Level 1+",
+                firstIncident: "2023-10-15: Security guard reported three individuals 'frozen' at entrance for hours. Victims unable to answer: 'Are you coming or going?'",
+                capabilities: "Existential Paralysis: Simple question causes decision paralysis (DC 7 WIL Check). Temporal Dilation: Each minute feels like hours (2 points Sanity Drain per hour). Question Evolution: Poses increasingly complex existential queries.",
+                weaknesses: "Third Party Intervention: Physical contact from non-affected individual breaks paralysis. Definitive Statement: Absolute certainty disrupts effect. Time Limit: Effect ceases after 12 hours.",
+                protocol: "Bureau monitors emergency calls for 'frozen' individuals. Rapid response teams break paralysis and administer memory suppression. Cover story: 'localized neurological event.'",
+                relatedFiles: ["Sidewalk Squares", "The Waiting Room", "The Parking Attendant"]
+            },
+            {
+                cfn: "S-NYC-156-E",
+                name: "The Elevator Music",
+                threatClass: "E-Class",
+                description: "Memetic audio phenomenon in elevator systems",
+                location: "New York City",
+                status: "Active (Low Priority)",
+                containmentDC: "5",
+                clearance: "Level 1+",
+                firstIncident: "2025-01-08: Multiple Manhattan office workers reported hearing same unidentifiable melody in different buildings. Attempts to record or reproduce it fail.",
+                capabilities: "Memetic Infection: Listeners remember melody perfectly but cannot recreate it. Recognition Void: Song feels familiar but unidentifiable. Minor Compulsion: Urge to wait for song to finish (DC 5 WIL Check).",
+                weaknesses: "Distraction Override: Conversation or phone call breaks listening compulsion. Memory Fade: Melody fades after 48 hours without re-exposure. Stairs: Only manifests in enclosed elevator cars.",
+                protocol: "Passive monitoring through Bureau informant network. Minimal threat level - active containment unnecessary. Agents advised to use stairs in affected buildings.",
+                relatedFiles: ["The Jazz That Never Was", "Whisper Leech"]
+            },
+            {
+                cfn: "I-SEA-071-D",
+                name: "The Food Cart Paradox",
+                threatClass: "D-Class",
+                description: "Spatially non-Euclidean food vendor",
+                location: "Seattle",
+                status: "Active (Investigation)",
+                containmentDC: "7",
+                clearance: "Level 1+",
+                firstIncident: "2024-04-12: Street food cart appears at multiple downtown locations simultaneously. Customers report identical vendor but different food quality and prices at each location.",
+                capabilities: "Quantum Location: Cart exists at 3-7 simultaneous locations within 2-mile radius. Probability Dining: Food quality exists in superposition - ranges from transcendent to inedible. Vendor Singularity: Same individual at all locations with no awareness of multiplicity.",
+                weaknesses: "Geographic Limitation: Cannot manifest outside original 2-mile area. Weather Dependency: All instances disappear during rainfall. Daily Reset: Closes at exactly 8 PM.",
+                protocol: "Bureau surveillance on all manifestation points. Due to non-hostile nature, full suppression unnecessary. Agents conduct regular purchases to monitor stability. Health department cover story deployed.",
+                relatedFiles: ["Room 313", "The Coffee That Never Cools"]
+            },
+            {
+                cfn: "S-LA-088-C",
+                name: "The Casting Call",
+                threatClass: "C-Class",
+                description: "Predatory entity exploiting actor aspirations",
+                location: "Los Angeles",
+                status: "Active (High Priority)",
+                containmentDC: "10",
+                clearance: "Level 1+",
+                firstIncident: "2021-08-16: LAPD investigation - 23 individuals responded to same casting call. Found in abandoned soundstage, aged 20+ years in 3 weeks.",
+                capabilities: "Desire Manifestation: Appears as perfect career opportunity matching victim's aspirations. Temporal Extraction: Victims experience subjective years while days pass externally. Life Force Consumption: Feeds on youth, talent, and hope.",
+                weaknesses: "Contract Scrutiny: SAG-AFTRA contract language causes entity pain if read aloud (DC 10 Occult Check). Union Solidarity: Groups of 3+ union members immune.",
+                protocol: "B.A.R.D. maintains deep cover in major talent agencies. Suspicious casting calls investigated within 24 hours. Elimination authorized.",
+                relatedFiles: ["The Archivist", "Lament Engine"]
+            },
+            {
+                cfn: "I-MIA-143-E",
+                name: "The Eternal Gridlock",
+                threatClass: "E-Class",
+                description: "Temporal loop affecting traffic intersections",
+                location: "Miami",
+                status: "Active (Monitored)",
+                containmentDC: "5",
+                clearance: "Level 1+",
+                firstIncident: "2025-02-28: Multiple drivers reported being 'stuck at same red light for hours.' Traffic camera confirmed light cycled normally.",
+                capabilities: "Temporal Perception Distortion: Victims experience extreme time dilation at traffic signals (1 minute = subjective 1 hour). Frustration Feedback: Growing impatience strengthens effect.",
+                weaknesses: "Calm Acceptance: Maintaining composure prevents escalation (DC 5 WIL Check). Route Change: Turning off affected street breaks effect.",
+                protocol: "Miami traffic department influenced to adjust signal timing. Bureau monitors traffic cameras for stationary vehicles.",
+                relatedFiles: ["The Waiting Room", "Sidewalk Squares"]
+            },
+            {
+                cfn: "S-PHI-119-D",
+                name: "The Brotherly Love Curse",
+                threatClass: "D-Class",
+                description: "Emotional manipulation entity tied to city history",
+                location: "Philadelphia",
+                status: "Active (Event-Triggered)",
+                containmentDC: "7",
+                clearance: "Level 1+",
+                firstIncident: "2022-11-04: Following city sporting event, 47 individuals experienced overwhelming love for strangers. 12 hospitalizations.",
+                capabilities: "Forced Empathy: During high-emotion civic events, causes overwhelming feelings of connection (DC 7 WIL Check). Mass Effect: Can affect crowds of 1000+ simultaneously.",
+                weaknesses: "Cynicism: Low CHA or antisocial tendencies resist effect easily. Emotional Hangover: Victims experience shame upon effect cessation.",
+                protocol: "Increased agent presence at major Philadelphia events. Agents equipped with emotional dampening equipment.",
+                relatedFiles: ["Beer Garden Consensus", "Lament Engine"]
+            },
+            {
+                cfn: "I-HOU-067-E",
+                name: "The Humidity Ghost",
+                threatClass: "E-Class",
+                description: "Anthropomorphized weather phenomenon",
+                location: "Houston",
+                status: "Active (Seasonal)",
+                containmentDC: "5",
+                clearance: "Level 1+",
+                firstIncident: "2024-07-22: Dozens reported seeing 'shape made of steam' in peripheral vision during extreme humidity.",
+                capabilities: "Environmental Manifestation: Becomes visible during humidity above 85%. Appears as humanoid shape of condensation.",
+                weaknesses: "Dehumidification: Cannot manifest in areas with humidity below 70%. Harmless: No hostile intent or physical harm ability.",
+                protocol: "Monitoring only. Phenomenon seasonal and self-limiting. Public awareness attributed to 'heat exhaustion hallucinations.'",
+                relatedFiles: ["Whisper Leech", "The Fog Collector"]
+            },
+            {
+                cfn: "S-BAL-091-C",
+                name: "The Harbor Debt",
+                threatClass: "C-Class",
+                description: "Transactional curse tied to historical smuggling",
+                location: "Baltimore",
+                status: "Active (Contained)",
+                containmentDC: "10",
+                clearance: "Level 1+",
+                firstIncident: "2020-09-03: Harbormaster found 18th-century promissory notes in modern containers. Readers become bound to fulfill historical debt.",
+                capabilities: "Debt Transference: Reading note transfers obligation. Escalating Pressure: After 7 days, victim manifests 18th-century diseases.",
+                weaknesses: "Debt Fulfillment: Completing delivery releases victim. Payment: Burning colonial-era currency value nullifies debt.",
+                protocol: "All Baltimore harbor containers scanned for pre-1800 documents. Three agents permanently stationed under Port Authority credentials.",
+                relatedFiles: ["The Archivist", "The River's Memory"]
+            },
+            {
+                cfn: "I-DET-104-D",
+                name: "The Assembly Line",
+                threatClass: "D-Class",
+                description: "Autonomous manufacturing phenomenon in abandoned factory",
+                location: "Detroit",
+                status: "Active (Contained)",
+                containmentDC: "7",
+                clearance: "Level 1+",
+                firstIncident: "2023-05-17: Urban explorers discovered abandoned auto plant producing vehicles with no power. Products are perfect replicas of 1973 models.",
+                capabilities: "Autonomous Production: Factory operates without power, producing one vehicle every 47 hours. Compulsive Work: Humans experience urge to 'clock in' (DC 7 WIL Check).",
+                weaknesses: "Union Strike: Speaking union solidarity phrases disrupts production. Shift Change: Cannot compel workers past 4:30 PM local time.",
+                protocol: "Factory perimeter secured. Agents warned: do NOT enter during business hours (6 AM - 4:30 PM Monday-Friday).",
+                relatedFiles: ["The Late Train", "The River's Memory"]
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let selectedFile = null;
+
+        function loadFiles() {
+            const saved = localStorage.getItem('bardFiles');
+            if (saved) {
+                files = JSON.parse(saved);
+            }
+            updateStats();
+            renderFileList();
+        }
+
+        function saveFiles() {
+            localStorage.setItem('bardFiles', JSON.stringify(files));
+        }
+
+        function updateStats() {
+            document.getElementById('totalFiles').textContent = files.length;
+            const active = files.filter(f => f.status.includes('Active')).length;
+            const contained = files.filter(f => f.status.includes('Contained')).length;
+            document.getElementById('activeFiles').textContent = active;
+            document.getElementById('containedFiles').textContent = contained;
+        }
+
+        function renderFileList() {
+            const container = document.getElementById('fileListContainer');
+            let filtered = files;
+
+            if (currentFilter !== 'all') {
+                if (currentFilter === 'Active') {
+                    filtered = files.filter(f => f.status.includes('Active'));
+                } else if (currentFilter === 'Contained') {
+                    filtered = files.filter(f => f.status.includes('Contained'));
+                } else {
+                    filtered = files.filter(f => f.threatClass === currentFilter);
+                }
+            }
+
+            if (currentSearch) {
+                const search = currentSearch.toLowerCase();
+                filtered = filtered.filter(f => 
+                    f.cfn.toLowerCase().includes(search) ||
+                    f.name.toLowerCase().includes(search) ||
+                    f.location.toLowerCase().includes(search) ||
+                    f.description.toLowerCase().includes(search)
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="no-results">NO RECORDS MATCH CRITERIA</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(file => `
+                <div class="file-item ${selectedFile && selectedFile.cfn === file.cfn ? 'active' : ''}" onclick="selectFile('${file.cfn}')">
+                    <div class="file-cfn">${file.cfn}</div>
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-class">${file.threatClass} // ${file.location}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectFile(cfn) {
+            selectedFile = files.find(f => f.cfn === cfn);
+            if (!selectedFile) return;
+
+            document.getElementById('placeholderText').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+
+            document.getElementById('detailContent').innerHTML = `
+                <h2>${selectedFile.cfn} // ${selectedFile.name}</h2>
+                
+                <div class="detail-section">
+                    <h3>Administrative Data</h3>
+                    <div class="detail-row">
+                        <div class="detail-label">CFN</div>
+                        <div class="detail-value">${selectedFile.cfn}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Threat Class</div>
+                        <div class="detail-value">${selectedFile.threatClass}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Containment DC</div>
+                        <div class="detail-value">${selectedFile.containmentDC}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Clearance</div>
+                        <div class="detail-value">${selectedFile.clearance}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Location</div>
+                        <div class="detail-value">${selectedFile.location}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">${selectedFile.status}</div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Entity Description</h3>
+                    <div class="detail-text">${selectedFile.description}</div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>First Observed Incident</h3>
+                    <div class="detail-text">${selectedFile.firstIncident}</div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Anomalous Capabilities</h3>
+                    <div class="detail-text">${selectedFile.capabilities}</div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Weaknesses / Vulnerabilities</h3>
+                    <div class="detail-text">${selectedFile.weaknesses}</div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Containment Protocol</h3>
+                    <div class="detail-text">${selectedFile.protocol}</div>
+                </div>
+            `;
+
+            renderRelatedFiles();
+            renderFileList();
+        }
+
+        function renderRelatedFiles() {
+            const container = document.getElementById('relatedFilesContainer');
+            if (!selectedFile || !selectedFile.relatedFiles || selectedFile.relatedFiles.length === 0) {
+                container.innerHTML = '<div class="placeholder">No cross-references available.</div>';
+                return;
+            }
+
+            container.innerHTML = selectedFile.relatedFiles.map(relatedName => {
+                const related = files.find(f => f.name === relatedName);
+                if (related) {
+                    return `
+                        <div class="related-item" onclick="selectFile('${related.cfn}')">
+                            <div class="related-type">${related.threatClass}</div>
+                            <div class="related-desc">${related.cfn} // ${related.name}</div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="related-item">
+                            <div class="related-type">External Reference</div>
+                            <div class="related-desc">${relatedName}</div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+
+        function setFilter(btn, filter) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = filter;
+            renderFileList();
+        }
+
+        function performSearch() {
+            currentSearch = document.getElementById('searchInput').value;
+            renderFileList();
+        }
+
+        function toggleImport() {
+            const section = document.getElementById('importSection');
+            section.classList.toggle('collapsed');
+        }
+
+        function showNotification(message, isError = false) {
+            const notification = document.createElement('div');
+            notification.className = 'notification' + (isError ? ' error' : '');
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function importFiles() {
+            const data = document.getElementById('importData').value.trim();
+            if (!data) {
+                showNotification('NO DATA PROVIDED', true);
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(data);
+                const newFiles = Array.isArray(parsed) ? parsed : [parsed];
+                
+                let imported = 0;
+                newFiles.forEach(file => {
+                    if (file.cfn && file.name && file.threatClass) {
+                        const existing = files.findIndex(f => f.cfn === file.cfn);
+                        if (existing >= 0) {
+                            files[existing] = file;
+                        } else {
+                            files.push(file);
+                        }
+                        imported++;
+                    }
+                });
+
+                saveFiles();
+                updateStats();
+                renderFileList();
+                document.getElementById('importData').value = '';
+                showNotification(`IMPORTED ${imported} FILE(S)`);
+            } catch (e) {
+                showNotification('PARSE ERROR: INVALID JSON FORMAT', true);
+            }
+        }
+
+        function exportFiles() {
+            const data = JSON.stringify(files, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bard_files_export.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('DATABASE EXPORTED');
+        }
+
+        function clearDatabase() {
+            if (confirm('WARNING: THIS WILL PURGE ALL LOCAL FILES. CONTINUE?')) {
+                localStorage.removeItem('bardFiles');
+                files = [];
+                selectedFile = null;
+                updateStats();
+                renderFileList();
+                document.getElementById('placeholderText').style.display = 'block';
+                document.getElementById('detailContent').style.display = 'none';
+                document.getElementById('relatedFilesContainer').innerHTML = '<div class="placeholder">No cross-references available.</div>';
+                showNotification('DATABASE PURGED');
+            }
+        }
+
+        // Initialize
+        loadFiles();
+    </script>
+</body>
+</html>
