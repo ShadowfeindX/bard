@@ -10,7 +10,7 @@
 		getInitiatives
 	} from './dashboard.svelte.js';
 
-	import { rollExplodingDie, initiative_roll } from './DieRollers.svelte';
+	import { rollExplodingDie, initiative_roll, getRollResult } from './DieRollers.svelte';
 
 	const { data } = $props();
 
@@ -25,6 +25,7 @@
 	let active_skill = "";
 	let active_skill_prof = "";
 	let roll_type = ""
+	let roll_result = getRollResult();
 
 	function kickAgent(i: number) {
 		return () => {
@@ -58,10 +59,10 @@
 	function uploadFile() {
 		/* document.getElementById('file-upload-input').click() */
 	}
-	function handleFileUpload(_) {
+	function handleFileUpload(_: any) {
 		return () => {};
 	}
-	function controlMedia(_) {
+	function controlMedia(_: any) {
 		return () => {};
 	}
 
