@@ -1,10 +1,8 @@
 import { dev } from "$app/environment";
 import { getAuth } from "firebase-admin/auth";
-import { FirebaseScrypt } from 'firebase-scrypt';
-import { hash_config } from "$lib/server/secrets";
+import { FirebaseScrypt, type FirebaseScryptOptions } from 'firebase-scrypt';
 
-
-
+let hash_config = new Function("return " + process.env.SCRYPT_HASH_CONFIG + ";")();
 const scrypt = new FirebaseScrypt(hash_config);
 
 console.log("server started...")

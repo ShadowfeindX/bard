@@ -2,8 +2,6 @@
 	let { register, form} = $props();
 
 	let badge: number = $state(form?.badge);
-
-	console.log(form);
 </script>
 
 <main>
