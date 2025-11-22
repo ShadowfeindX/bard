@@ -7,6 +7,7 @@ node_modules
 .netlify
 .wrangler
 /.svelte-kit
+/._dir
 /build
 
 # OS
@@ -28,3 +29,4 @@ storybook-static
 
 bard-54584-firebase-adminsdk-swzfn-118653a7a4.json
 src/lib/server/secrets.ts
+apphosting.emulator.yaml

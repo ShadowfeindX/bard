@@ -39,6 +39,7 @@ interface IProfile {
 interface ICampaign { }
 
 type Clearance = number;
+type Attributes = Record<string, number> ;
 
 export interface ICharacter {
     id: string;
@@ -48,7 +49,7 @@ export interface ICharacter {
     attributes: Attributes;
     bonuses: Attributes;
     stats: Attributes;
-    skills: Skills;
+    skills: Record<string, string>;
     equipment: string;
     afflictions: string;
     notes: string;
