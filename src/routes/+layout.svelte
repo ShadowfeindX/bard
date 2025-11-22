@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { auth } from '$lib/client/firebase.js';
-	import { newUser, type User } from '$lib/Profile.svelte.js';
-	import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+
 
 	// let user = $state(auth.currentUser);
 	// onAuthStateChanged(auth, aUser => {
@@ -12,7 +10,7 @@
 	// 	}
 	// });
 
-	let { children, data } = $props();
+	let { children } = $props();
 </script>
 
 
