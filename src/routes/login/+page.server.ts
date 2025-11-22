@@ -1,6 +1,5 @@
 import { fail, type Action, type ActionFailure, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-// import { db } from '$lib/firebase.client';
 import { auth, hash } from "$lib/server/firebase";
 import { Timestamp } from "firebase/firestore";
 
