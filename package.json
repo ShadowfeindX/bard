@@ -22,6 +22,8 @@
 		"@chromatic-com/storybook": "^4.1.1",
 		"@eslint/compat": "^1.4.0",
 		"@eslint/js": "^9.36.0",
+		"@melt-ui/pp": "^0.3.2",
+		"@melt-ui/svelte": "^0.86.6",
 		"@playwright/test": "^1.55.1",
 		"@storybook/addon-a11y": "^9.1.13",
 		"@storybook/addon-docs": "^9.1.13",
@@ -36,9 +38,11 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-storybook": "^9.1.13",
 		"eslint-plugin-svelte": "^3.12.4",
+		"firebase-admin": "^13.6.0",
 		"globals": "^16.4.0",
 		"prettier": "^3.6.2",
 		"prettier-plugin-svelte": "^3.4.0",
+		"sass-embedded": "^1.93.3",
 		"storybook": "^9.1.13",
 		"svelte": "^5.39.5",
 		"svelte-check": "^4.3.2",
@@ -46,5 +50,10 @@
 		"typescript-eslint": "^8.44.1",
 		"vite": "^7.1.7",
 		"vite-plugin-devtools-json": "^1.0.0"
+	},
+	"dependencies": {
+		"firebase": "^12.5.0",
+		"firebase-scrypt": "^2.2.0",
+		"zod": "^4.1.12"
 	}
 }

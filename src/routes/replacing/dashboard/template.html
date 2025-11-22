@@ -1,0 +1,126 @@
+<template id="projector-content">
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <title>B.A.R.D. Projector Output</title>
+        <style>
+            :root {
+                --classic-primary: #C00000;
+                --classic-secondary: #EAEAEA;
+                --classic-background: #0A0A0A;
+                --classic-component: #1F1F1F;
+                --classic-accent: #00FF99;
+                --modern-primary: #00FFFF;
+                --modern-secondary: #FFFFFF;
+                --modern-background: #282A36;
+                --modern-component: #383A59;
+                --modern-accent: #FF5555;
+            }
+
+            .proj-body {
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100vw;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .proj-container {
+                max-width: 100%;
+                max-height: 100%;
+                aspect-ratio: 16 / 9;
+                margin: auto;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            }
+
+            .proj-visual-pane {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                background-color: var(--classic-background);
+            }
+
+            .proj-visual-pane>* {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                border: 0;
+            }
+
+            .proj-roll-strip,
+            .proj-now-playing {
+                flex-shrink: 0;
+                padding: 10px;
+                text-align: center;
+                border-top: 1px solid;
+                font-family: 'Consolas', monospace;
+            }
+
+            /* Projector Theme Classes */
+            .classic {
+                background-color: var(--classic-background);
+            }
+
+            .classic .proj-container {
+                border: 2px solid var(--classic-accent);
+            }
+
+            .classic .proj-roll-strip,
+            .classic .proj-now-playing {
+                color: var(--classic-accent);
+                border-color: var(--classic-accent);
+                background-color: var(--classic-component);
+            }
+
+            .modern {
+                background-color: var(--modern-background);
+            }
+
+            .modern .proj-container {
+                border: 2px solid var(--modern-primary);
+            }
+
+            .modern .proj-roll-strip,
+            .modern .proj-now-playing {
+                color: var(--modern-primary);
+                border-color: var(--modern-primary);
+                background-color: var(--modern-component);
+            }
+
+            /* Text display styles for the projector, using the body's current theme color */
+            .proj-text-content {
+                padding: 30px;
+                overflow-y: auto;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                max-width: 90%;
+                max-height: 90%;
+                font-size: 1.5em;
+                line-height: 1.5;
+            }
+        </style>
+    </head>
+
+    <body class="proj-body classic">
+        <div class="proj-container">
+            <audio id="music-audio" loop></audio>
+            <audio id="sfx-audio"></audio>
+            <video id="proj-video" autoplay loop muted style="display: none;"></video>
+
+            <div id="proj-visual-pane" class="proj-visual-pane">
+                Waiting for Handler Input...
+            </div>
+            <div id="proj-roll-strip" class="proj-roll-strip"></div>
+            <div id="proj-now-playing" class="proj-now-playing">Now Playing: STOPPED</div>
+        </div>
+    </body>
+
+    </html>
+</template>
